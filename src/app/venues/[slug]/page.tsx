@@ -68,6 +68,12 @@ export default async function VenueDetailPage({
     venue.sitioWeb !== undefined ||
     venue.telefono !== undefined;
 
+  // Formateado en UTC para no correr el día al renderizar en el servidor.
+  const actualizado = new Date(venue.ultimaActualizacion).toLocaleDateString(
+    "es-CL",
+    { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }
+  );
+
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-6 py-10">
       <Link
@@ -190,6 +196,8 @@ export default async function VenueDetailPage({
           direccion={venue.direccion}
         />
       </section>
+
+      <p className="text-xs text-zinc-400">Actualizado el {actualizado}</p>
     </main>
   );
 }

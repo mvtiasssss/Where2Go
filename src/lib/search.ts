@@ -1,6 +1,7 @@
 import type { Commune, Coordinates, Venue, VenueCategory } from "@/types/venue";
 import type { SearchQuery } from "@/types/search";
 import { haversineDistanceKm } from "./geo";
+import { costoPersona } from "./utils";
 
 export function searchByCategory(
   venues: Venue[],
@@ -13,12 +14,13 @@ export function searchByCommune(venues: Venue[], comuna: Commune): Venue[] {
   return venues.filter((venue) => venue.comuna === comuna);
 }
 
-// Filtra por presupuesto: conserva los locales con ticketPromedio <= presupuestoMax.
+// Filtra por presupuesto usando el costo real por persona (ticket + entrada si la
+// cobra), no solo el ticket: conserva los locales con costoPersona <= presupuestoMax.
 export function searchByBudget(
   venues: Venue[],
   presupuestoMax: number
 ): Venue[] {
-  return venues.filter((venue) => venue.ticketPromedio <= presupuestoMax);
+  return venues.filter((venue) => costoPersona(venue) <= presupuestoMax);
 }
 
 export function searchByRadius(
