@@ -11,7 +11,8 @@ import {
 } from "react-leaflet";
 import { latLngBounds } from "leaflet";
 import "leaflet/dist/leaflet.css";
-import type { Coordinates, Venue } from "@/types/venue";
+import type { Coordinates } from "@/types/venue";
+import type { VenueConDistancia } from "@/lib/search";
 import { useTilesCarto } from "@/components/map/tiles";
 import {
   ESTILO_CATEGORIA,
@@ -31,19 +32,19 @@ interface CentroUsuario {
 }
 
 interface MapControllerProps {
-  venues: Venue[];
+  resultados: VenueConDistancia[];
   centro: Coordinates | null;
 }
 
 // Encuadra los resultados (y el centro del usuario, si lo hay) al cambiar.
-function MapController({ venues, centro }: MapControllerProps) {
+function MapController({ resultados, centro }: MapControllerProps) {
   const map = useMap();
   useEffect(() => {
-    const puntos: Coordinates[] = venues.map((v) => v.coordenadas);
+    const puntos: Coordinates[] = resultados.map((r) => r.venue.coordenadas);
     if (centro) puntos.push(centro);
     if (puntos.length === 0) return;
     map.fitBounds(latLngBounds(puntos), { padding: [40, 40], maxZoom: 15 });
-  }, [map, venues, centro]);
+  }, [map, resultados, centro]);
   return null;
 }
 
@@ -79,14 +80,14 @@ function Leyenda() {
 }
 
 interface VenueMapProps {
-  venues: Venue[];
+  resultados: VenueConDistancia[];
   centroUsuario: CentroUsuario | null;
   selectedId: string | null;
   onSelect: (id: string | null) => void;
 }
 
 export function VenueMap({
-  venues,
+  resultados,
   centroUsuario,
   selectedId,
   onSelect,
@@ -104,7 +105,7 @@ export function VenueMap({
         {/* key={tema} remonta el TileLayer limpio al cambiar de tema (sin tiles mezclados). */}
         <TileLayer key={tema} attribution={atribucion} url={url} />
 
-        {venues.map((venue) => {
+        {resultados.map(({ venue, distanciaKm }) => {
           const resaltado = venue.id === selectedId;
           return (
             // Clic abre el popup (toque intermedio). Hover resalta su card (sync).
@@ -119,7 +120,7 @@ export function VenueMap({
               }}
             >
               <Popup>
-                <VenuePopup venue={venue} />
+                <VenuePopup venue={venue} distanciaKm={distanciaKm} />
               </Popup>
             </Marker>
           );
@@ -145,7 +146,7 @@ export function VenueMap({
         )}
 
         <MapController
-          venues={venues}
+          resultados={resultados}
           centro={centroUsuario ? centroUsuario.coordenadas : null}
         />
         <InvalidarTamano />

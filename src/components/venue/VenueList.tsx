@@ -1,14 +1,14 @@
-import type { Venue } from "@/types/venue";
+import type { VenueConDistancia } from "@/lib/search";
 import { VenueCard } from "@/components/venue/VenueCard";
 
 interface VenueListProps {
-  venues: Venue[];
+  resultados: VenueConDistancia[];
   selectedId: string | null;
   onSelect: (id: string | null) => void;
 }
 
-export function VenueList({ venues, selectedId, onSelect }: VenueListProps) {
-  if (venues.length === 0) {
+export function VenueList({ resultados, selectedId, onSelect }: VenueListProps) {
+  if (resultados.length === 0) {
     return (
       <p className="text-sm text-zinc-500 dark:text-zinc-400">
         No encontramos locales con esos filtros. Prueba ampliar el presupuesto o
@@ -19,10 +19,11 @@ export function VenueList({ venues, selectedId, onSelect }: VenueListProps) {
 
   return (
     <ul className="flex flex-col gap-2">
-      {venues.map((venue) => (
+      {resultados.map(({ venue, distanciaKm }) => (
         <li key={venue.id}>
           <VenueCard
             venue={venue}
+            distanciaKm={distanciaKm}
             selected={venue.id === selectedId}
             onSelect={onSelect}
           />

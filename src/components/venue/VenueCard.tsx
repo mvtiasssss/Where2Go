@@ -4,18 +4,24 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import type { Venue } from "@/types/venue";
-import { getPriceLevel } from "@/lib/utils";
+import { getPriceLevel, formatearDistancia } from "@/lib/utils";
 import { IndicadorAbierto } from "@/components/venue/IndicadorAbierto";
 
 const PLACEHOLDER = "/venues/placeholder.png";
 
 interface VenueCardProps {
   venue: Venue;
+  distanciaKm: number | null;
   selected: boolean;
   onSelect: (id: string | null) => void;
 }
 
-export function VenueCard({ venue, selected, onSelect }: VenueCardProps) {
+export function VenueCard({
+  venue,
+  distanciaKm,
+  selected,
+  onSelect,
+}: VenueCardProps) {
   const ref = useRef<HTMLElement>(null);
 
   // Sync mapa -> lista: al resaltarse desde el mapa, la card entra en vista
@@ -61,6 +67,11 @@ export function VenueCard({ venue, selected, onSelect }: VenueCardProps) {
             {precio}
           </span>
           <IndicadorAbierto venue={venue} />
+          {distanciaKm !== null && (
+            <span className="text-xs text-zinc-500 dark:text-zinc-400">
+              {formatearDistancia(distanciaKm)}
+            </span>
+          )}
         </div>
         <span className="text-sm capitalize text-zinc-500 dark:text-zinc-400">
           {venue.categoria} · {venue.comuna}

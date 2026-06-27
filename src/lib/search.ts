@@ -83,3 +83,30 @@ export function searchVenues(
 
   return resultado;
 }
+
+export interface VenueConDistancia {
+  venue: Venue;
+  distanciaKm: number | null; // null cuando no hay centro (modo comuna)
+}
+
+/**
+ * Adjunta la distancia al centro de búsqueda y ordena ascendente, SOLO en modo
+ * "cerca-de-mi". En modo comuna no hay centro -> distanciaKm null y orden intacto
+ * (no se inventa un orden). La distancia se calcula una sola vez acá (reusa
+ * Haversine), para que card y popup no la recalculen. Puro y determinístico.
+ */
+export function ordenarPorCercania(
+  venues: Venue[],
+  query: SearchQuery
+): VenueConDistancia[] {
+  if (query.modo === "cerca-de-mi" && query.coordenadas) {
+    const centro = query.coordenadas;
+    const conDistancia = venues.map((venue) => ({
+      venue,
+      distanciaKm: haversineDistanceKm(centro, venue.coordenadas),
+    }));
+    conDistancia.sort((a, b) => a.distanciaKm - b.distanciaKm);
+    return conDistancia;
+  }
+  return venues.map((venue) => ({ venue, distanciaKm: null }));
+}

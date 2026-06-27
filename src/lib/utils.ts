@@ -22,3 +22,15 @@ export function getPriceLevel(ticketPromedio: number): PriceLevel {
   if (ticketPromedio <= 30000) return "$$";
   return "$$$";
 }
+
+/**
+ * Formatea una distancia (km) legible: "a 850 m" si es menor a 1 km, o "a 1,2 km"
+ * (coma decimal es-CL) en caso contrario.
+ */
+export function formatearDistancia(km: number): string {
+  if (km < 1) return `a ${Math.round(km * 1000)} m`;
+  return `a ${km.toLocaleString("es-CL", {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  })} km`;
+}

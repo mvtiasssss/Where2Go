@@ -1,15 +1,16 @@
 import Image from "next/image";
 import type { Venue } from "@/types/venue";
-import { getPriceLevel } from "@/lib/utils";
+import { getPriceLevel, formatearDistancia } from "@/lib/utils";
 import { IndicadorAbierto } from "@/components/venue/IndicadorAbierto";
 
 const PLACEHOLDER = "/venues/placeholder.png";
 
 interface VenuePopupProps {
   venue: Venue;
+  distanciaKm: number | null;
 }
 
-export function VenuePopup({ venue }: VenuePopupProps) {
+export function VenuePopup({ venue, distanciaKm }: VenuePopupProps) {
   // Guarda noUncheckedIndexedAccess: fotos[0] puede ser undefined.
   const portada = venue.fotos[0] ?? PLACEHOLDER;
   const precio = getPriceLevel(venue.ticketPromedio);
@@ -36,6 +37,9 @@ export function VenuePopup({ venue }: VenuePopupProps) {
       <p className="text-xs text-zinc-600">
         ${venue.ticketPromedio.toLocaleString("es-CL")} por persona
       </p>
+      {distanciaKm !== null && (
+        <p className="text-xs text-zinc-600">{formatearDistancia(distanciaKm)}</p>
+      )}
       <div className="mt-1.5">
         {/* Reutiliza estaAbierto vía IndicadorAbierto (hidratación-seguro). */}
         <IndicadorAbierto venue={venue} />

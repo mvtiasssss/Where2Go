@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import type { Venue } from "@/types/venue";
 import type { SearchQuery } from "@/types/search";
-import { searchVenues } from "@/lib/search";
+import { searchVenues, ordenarPorCercania } from "@/lib/search";
 import { SearchForm } from "@/components/search/SearchForm";
 import { ResumenBusqueda } from "@/components/search/ResumenBusqueda";
 import { VenueList } from "@/components/venue/VenueList";
@@ -46,11 +46,13 @@ export function SearchExperience({ venues }: SearchExperienceProps) {
     if (!query) return [];
     // new Date() acá: solo corre en cliente (los resultados se montan tras buscar),
     // así no hay mismatch de hidratación. El motor sigue puro: recibe `ahora`.
-    return searchVenues(
+    const filtrados = searchVenues(
       venues,
       { ...query, soloAbiertosAhora: soloAbiertos },
       new Date()
     );
+    // Adjunta distancia y ordena por cercanía solo en cerca-de-mi (comuna: intacto).
+    return ordenarPorCercania(filtrados, query);
   }, [venues, query, soloAbiertos]);
 
   // Centro/radio para el mapa, solo si la búsqueda fue por geolocalización.
@@ -138,7 +140,7 @@ export function SearchExperience({ venues }: SearchExperienceProps) {
           <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] lg:items-start lg:gap-4">
             <div className={vistaResultados === "lista" ? "lg:block" : "hidden lg:block"}>
               <VenueList
-                venues={resultados}
+                resultados={resultados}
                 selectedId={selectedId}
                 onSelect={setSelectedId}
               />
@@ -157,7 +159,7 @@ export function SearchExperience({ venues }: SearchExperienceProps) {
                 className="relative z-0 h-[65vh] min-h-[420px] overflow-hidden rounded-xl border border-black/10 lg:h-[78vh] dark:border-white/15"
               >
                 <VenueMap
-                  venues={resultados}
+                  resultados={resultados}
                   centroUsuario={centroUsuario}
                   selectedId={selectedId}
                   onSelect={setSelectedId}
