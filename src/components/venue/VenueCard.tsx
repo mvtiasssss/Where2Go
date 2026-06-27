@@ -62,11 +62,11 @@ export function VenueCard({ venue, selected, onSelect }: VenueCardProps) {
           </span>
           <IndicadorAbierto venue={venue} />
         </div>
-        <span className="text-sm capitalize text-zinc-500">
+        <span className="text-sm capitalize text-zinc-500 dark:text-zinc-400">
           {venue.categoria} · {venue.comuna}
           {venue.sector ? ` (${venue.sector})` : ""}
         </span>
-        <span className="text-sm text-zinc-500">
+        <span className="text-sm text-zinc-500 dark:text-zinc-400">
           ${venue.ticketPromedio.toLocaleString("es-CL")} por persona
         </span>
       </div>

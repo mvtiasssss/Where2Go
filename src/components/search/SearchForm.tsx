@@ -29,8 +29,8 @@ const claseOpcion = (activa: boolean) =>
       : "border-black/15 hover:bg-black/5 dark:border-white/20 dark:hover:bg-white/10"
   }`;
 const claseVolver =
-  "self-start text-sm text-zinc-500 underline-offset-2 transition-colors hover:text-foreground hover:underline";
-const ENCABEZADO = "text-sm font-semibold uppercase tracking-wide text-zinc-500";
+  "self-start text-sm text-zinc-500 dark:text-zinc-400 underline-offset-2 transition-colors hover:text-foreground hover:underline";
+const ENCABEZADO = "text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400";
 
 type Paso = "ubicacion" | "categoria" | "precio";
 
@@ -139,7 +139,7 @@ export function SearchForm({ onSearch }: SearchFormProps) {
 
   return (
     <div className="flex flex-col gap-6 rounded-2xl border border-black/10 p-6 dark:border-white/15">
-      <p className="text-xs font-medium uppercase tracking-wide text-zinc-400">
+      <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
         Paso {numeroPaso} de 3
       </p>
 

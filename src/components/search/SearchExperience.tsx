@@ -15,7 +15,7 @@ const VenueMap = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="flex h-full w-full items-center justify-center text-sm text-zinc-500">
+      <div className="flex h-full w-full items-center justify-center text-sm text-zinc-500 dark:text-zinc-400">
         Cargando mapa…
       </div>
     ),
@@ -73,7 +73,7 @@ export function SearchExperience({ venues }: SearchExperienceProps) {
       <SearchForm onSearch={manejarBusqueda} />
 
       {query === null ? (
-        <p className="text-sm text-zinc-500">
+        <p className="text-sm text-zinc-500 dark:text-zinc-400">
           Define tu búsqueda y presiona Buscar.
         </p>
       ) : (
@@ -94,7 +94,7 @@ export function SearchExperience({ venues }: SearchExperienceProps) {
                 className={`rounded-full border px-3 py-1.5 text-sm font-medium transition-colors ${
                   soloAbiertos
                     ? "border-foreground bg-foreground text-background"
-                    : "border-black/15 text-zinc-500 hover:text-foreground dark:border-white/20"
+                    : "border-black/15 text-zinc-500 dark:text-zinc-400 hover:text-foreground dark:border-white/20"
                 }`}
               >
                 Abierto ahora
@@ -111,7 +111,7 @@ export function SearchExperience({ venues }: SearchExperienceProps) {
                   className={`rounded-full px-4 py-1.5 text-sm font-medium capitalize transition-colors ${
                     vistaResultados === vista
                       ? "bg-foreground text-background"
-                      : "text-zinc-500 hover:text-foreground"
+                      : "text-zinc-500 dark:text-zinc-400 hover:text-foreground"
                   }`}
                 >
                   {vista}

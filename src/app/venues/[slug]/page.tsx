@@ -89,7 +89,7 @@ export default async function VenueDetailPage({
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-6 py-10">
       <Link
         href="/"
-        className="text-sm text-zinc-500 transition-colors hover:text-foreground"
+        className="text-sm text-zinc-500 dark:text-zinc-400 transition-colors hover:text-foreground"
       >
         ← Volver a la búsqueda
       </Link>
@@ -107,7 +107,7 @@ export default async function VenueDetailPage({
           </h1>
           <IndicadorAbierto venue={venue} />
         </div>
-        <p className="capitalize text-zinc-500">
+        <p className="capitalize text-zinc-500 dark:text-zinc-400">
           {venue.categoria} · {venue.comuna}
           {venue.sector ? ` (${venue.sector})` : ""}
         </p>
@@ -137,7 +137,7 @@ export default async function VenueDetailPage({
       <section className="grid gap-4 sm:grid-cols-2">
         <dl className="flex flex-col gap-3 text-sm">
           <div>
-            <dt className="text-zinc-500">Ticket promedio</dt>
+            <dt className="text-zinc-500 dark:text-zinc-400">Ticket promedio</dt>
             <dd className="font-medium">
               ${venue.ticketPromedio.toLocaleString("es-CL")} por persona{" "}
               <span className="text-emerald-600 dark:text-emerald-400">
@@ -146,17 +146,17 @@ export default async function VenueDetailPage({
             </dd>
           </div>
           <div>
-            <dt className="text-zinc-500">Entrada</dt>
+            <dt className="text-zinc-500 dark:text-zinc-400">Entrada</dt>
             <dd className="font-medium">{entrada}</dd>
           </div>
           <div>
-            <dt className="text-zinc-500">Dirección</dt>
+            <dt className="text-zinc-500 dark:text-zinc-400">Dirección</dt>
             <dd className="font-medium">{venue.direccion}</dd>
           </div>
         </dl>
 
         <div className="flex flex-col gap-2 text-sm">
-          <h2 className="text-zinc-500">Horarios</h2>
+          <h2 className="text-zinc-500 dark:text-zinc-400">Horarios</h2>
           {horarios.length > 0 ? (
             <ul className="flex flex-col gap-1">
               {horarios.map((item) => (
@@ -169,7 +169,7 @@ export default async function VenueDetailPage({
               ))}
             </ul>
           ) : (
-            <p className="text-zinc-500">Sin horarios informados.</p>
+            <p className="text-zinc-500 dark:text-zinc-400">Sin horarios informados.</p>
           )}
         </div>
       </section>
@@ -221,7 +221,9 @@ export default async function VenueDetailPage({
         />
       </section>
 
-      <p className="text-xs text-zinc-400">Actualizado el {actualizado}</p>
+      <p className="text-xs text-zinc-500 dark:text-zinc-400">
+        Actualizado el {actualizado}
+      </p>
     </main>
   );
 }

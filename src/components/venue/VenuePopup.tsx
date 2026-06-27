@@ -30,10 +30,10 @@ export function VenuePopup({ venue }: VenuePopupProps) {
           {precio}
         </span>
       </div>
-      <p className="mt-0.5 text-xs capitalize text-zinc-500">
+      <p className="mt-0.5 text-xs capitalize text-zinc-600">
         {venue.categoria} · {venue.comuna}
       </p>
-      <p className="text-xs text-zinc-500">
+      <p className="text-xs text-zinc-600">
         ${venue.ticketPromedio.toLocaleString("es-CL")} por persona
       </p>
       <div className="mt-1.5">

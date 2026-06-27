@@ -10,7 +10,7 @@ interface VenueListProps {
 export function VenueList({ venues, selectedId, onSelect }: VenueListProps) {
   if (venues.length === 0) {
     return (
-      <p className="text-sm text-zinc-500">
+      <p className="text-sm text-zinc-500 dark:text-zinc-400">
         No encontramos locales con esos filtros. Prueba ampliar el presupuesto o
         el radio.
       </p>
