@@ -6,6 +6,7 @@ import { getVenueBySlug, getAllVenuesIncludingInactive } from "@/lib/data";
 import { getPriceLevel } from "@/lib/utils";
 import { VenueDetailMap } from "@/components/map/VenueDetailMap";
 import { IndicadorAbierto } from "@/components/venue/IndicadorAbierto";
+import { ImagenesReferenciales } from "@/components/venue/ImagenesReferenciales";
 import type { DiaSemana } from "@/types/venue";
 
 const PLACEHOLDER = "/venues/placeholder.png";
@@ -113,22 +114,25 @@ export default async function VenueDetailPage({
         <p className="text-zinc-600 dark:text-zinc-400">{venue.descripcion}</p>
       </header>
 
-      <section className="grid gap-2 sm:grid-cols-2">
-        {fotos.map((foto, indice) => (
-          <div
-            key={`${foto}-${indice}`}
-            className="relative aspect-video overflow-hidden rounded-xl bg-black/5"
-          >
-            <Image
-              src={foto}
-              alt={`${venue.nombre} — foto ${indice + 1}`}
-              fill
-              sizes="(max-width: 640px) 100vw, 50vw"
-              className="object-cover"
-            />
-          </div>
-        ))}
-      </section>
+      <div className="flex flex-col gap-1">
+        <section className="grid gap-2 sm:grid-cols-2">
+          {fotos.map((foto, indice) => (
+            <div
+              key={`${foto}-${indice}`}
+              className="relative aspect-video overflow-hidden rounded-xl bg-black/5"
+            >
+              <Image
+                src={foto}
+                alt={`${venue.nombre} — foto ${indice + 1}`}
+                fill
+                sizes="(max-width: 640px) 100vw, 50vw"
+                className="object-cover"
+              />
+            </div>
+          ))}
+        </section>
+        <ImagenesReferenciales />
+      </div>
 
       <section className="grid gap-4 sm:grid-cols-2">
         <dl className="flex flex-col gap-3 text-sm">
