@@ -6,6 +6,7 @@ import type { Venue } from "@/types/venue";
 import type { SearchQuery } from "@/types/search";
 import { searchVenues } from "@/lib/search";
 import { SearchForm } from "@/components/search/SearchForm";
+import { ResumenBusqueda } from "@/components/search/ResumenBusqueda";
 import { VenueList } from "@/components/venue/VenueList";
 
 // Mapa client-only: dynamic + ssr:false vive aquí (componente cliente), nunca en
@@ -37,6 +38,9 @@ export function SearchExperience({ venues }: SearchExperienceProps) {
   const [vistaResultados, setVistaResultados] = useState<VistaResultados>("mapa");
   // Filtro rápido "Abierto ahora" (no agrega un paso al wizard).
   const [soloAbiertos, setSoloAbiertos] = useState(false);
+  // Wizard colapsado (resumen) vs expandido. No es estado de búsqueda: el wizard
+  // se oculta con CSS (no se desmonta), así conserva sus pasos al reabrir.
+  const [colapsado, setColapsado] = useState(false);
 
   const resultados = useMemo(() => {
     if (!query) return [];
@@ -66,11 +70,19 @@ export function SearchExperience({ venues }: SearchExperienceProps) {
     setQuery(nuevaQuery);
     setSelectedId(null); // nueva búsqueda -> limpia la selección
     setVistaResultados("mapa"); // ...y vuelve a la vista de mapa
+    setColapsado(true); // ...y colapsa el wizard para que suban los resultados
   }
 
   return (
     <div className="flex flex-col gap-6">
-      <SearchForm onSearch={manejarBusqueda} />
+      {/* Wizard oculto (no desmontado) al colapsar -> conserva sus pasos al reabrir. */}
+      <div className={colapsado ? "hidden" : ""}>
+        <SearchForm onSearch={manejarBusqueda} />
+      </div>
+
+      {colapsado && query && (
+        <ResumenBusqueda query={query} onEditar={() => setColapsado(false)} />
+      )}
 
       {query === null ? (
         <p className="text-sm text-zinc-500 dark:text-zinc-400">
