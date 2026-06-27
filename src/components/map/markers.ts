@@ -24,27 +24,41 @@ export const ORDEN_CATEGORIAS: VenueCategory[] = [
   "restaurante",
 ];
 
-function hacerIconoCategoria(categoria: VenueCategory): DivIcon {
+function hacerIconoCategoria(
+  categoria: VenueCategory,
+  resaltado: boolean
+): DivIcon {
   const estilo = ESTILO_CATEGORIA[categoria];
+  const clase = resaltado
+    ? "venue-marker__pin venue-marker__pin--resaltado"
+    : "venue-marker__pin";
   return new DivIcon({
     className: "venue-marker",
-    html: `<span class="venue-marker__pin" style="background:${estilo.color}">${estilo.emoji}</span>`,
+    html: `<span class="${clase}" style="background:${estilo.color}">${estilo.emoji}</span>`,
     iconSize: [30, 30],
     iconAnchor: [15, 15],
     popupAnchor: [0, -16],
   });
 }
 
-// Pre-creados (4 categorías): se reutilizan en cada marcador.
-const ICONOS_CATEGORIA: Record<VenueCategory, DivIcon> = {
-  discoteca: hacerIconoCategoria("discoteca"),
-  bar: hacerIconoCategoria("bar"),
-  pub: hacerIconoCategoria("pub"),
-  restaurante: hacerIconoCategoria("restaurante"),
+interface VarianteIcono {
+  normal: DivIcon;
+  resaltado: DivIcon;
+}
+
+// Pre-creados (4 categorías × normal/resaltado): se reutilizan en cada marcador.
+const ICONOS_CATEGORIA: Record<VenueCategory, VarianteIcono> = {
+  discoteca: { normal: hacerIconoCategoria("discoteca", false), resaltado: hacerIconoCategoria("discoteca", true) },
+  bar: { normal: hacerIconoCategoria("bar", false), resaltado: hacerIconoCategoria("bar", true) },
+  pub: { normal: hacerIconoCategoria("pub", false), resaltado: hacerIconoCategoria("pub", true) },
+  restaurante: { normal: hacerIconoCategoria("restaurante", false), resaltado: hacerIconoCategoria("restaurante", true) },
 };
 
-export function iconoCategoria(categoria: VenueCategory): DivIcon {
-  return ICONOS_CATEGORIA[categoria];
+export function iconoCategoria(
+  categoria: VenueCategory,
+  resaltado = false
+): DivIcon {
+  return ICONOS_CATEGORIA[categoria][resaltado ? "resaltado" : "normal"];
 }
 
 // Marcador del usuario: claramente distinto a los locales (punto azul).

@@ -19,6 +19,7 @@ import {
   iconoCategoria,
   iconoUsuario,
 } from "@/components/map/markers";
+import { VenuePopup } from "@/components/venue/VenuePopup";
 
 // Centro de Santiago por defecto, hasta que fitBounds encuadre los resultados.
 const SANTIAGO_CENTER: Coordinates = { lat: -33.43, lng: -70.62 };
@@ -46,6 +47,18 @@ function MapController({ venues, centro }: MapControllerProps) {
   return null;
 }
 
+// El mapa puede quedar montado pero oculto (toggle mobile -> display:none rompe el
+// sizing de Leaflet). invalidateSize en cada resize del contenedor lo corrige.
+function InvalidarTamano() {
+  const map = useMap();
+  useEffect(() => {
+    const observador = new ResizeObserver(() => map.invalidateSize());
+    observador.observe(map.getContainer());
+    return () => observador.disconnect();
+  }, [map]);
+  return null;
+}
+
 // Leyenda discreta: no captura clics (pointer-events-none) ni tapa el mapa.
 function Leyenda() {
   return (
@@ -68,9 +81,16 @@ function Leyenda() {
 interface VenueMapProps {
   venues: Venue[];
   centroUsuario: CentroUsuario | null;
+  selectedId: string | null;
+  onSelect: (id: string | null) => void;
 }
 
-export function VenueMap({ venues, centroUsuario }: VenueMapProps) {
+export function VenueMap({
+  venues,
+  centroUsuario,
+  selectedId,
+  onSelect,
+}: VenueMapProps) {
   const { tema, url, atribucion } = useTilesCarto();
 
   return (
@@ -84,31 +104,26 @@ export function VenueMap({ venues, centroUsuario }: VenueMapProps) {
         {/* key={tema} remonta el TileLayer limpio al cambiar de tema (sin tiles mezclados). */}
         <TileLayer key={tema} attribution={atribucion} url={url} />
 
-        {venues.map((venue) => (
-          // El Marker con Popup hijo abre el globito al hacer clic (toque intermedio,
-          // no navegación directa); "Ver detalle" recién lleva a la ficha.
-          <Marker
-            key={venue.id}
-            position={venue.coordenadas}
-            icon={iconoCategoria(venue.categoria)}
-          >
-            <Popup>
-              <span className="text-sm font-semibold">{venue.nombre}</span>
-              <br />
-              <span className="text-xs capitalize text-zinc-500">
-                {venue.categoria} · {venue.comuna}
-              </span>
-              <br />
-              {/* <a> nativo: el popup lo renderiza Leaflet; un anchor navega siempre. */}
-              <a
-                href={`/venues/${venue.slug}`}
-                className="font-medium text-emerald-600 underline-offset-2 hover:underline dark:text-emerald-400"
-              >
-                Ver detalle →
-              </a>
-            </Popup>
-          </Marker>
-        ))}
+        {venues.map((venue) => {
+          const resaltado = venue.id === selectedId;
+          return (
+            // Clic abre el popup (toque intermedio). Hover resalta su card (sync).
+            <Marker
+              key={venue.id}
+              position={venue.coordenadas}
+              icon={iconoCategoria(venue.categoria, resaltado)}
+              zIndexOffset={resaltado ? 1000 : 0}
+              eventHandlers={{
+                mouseover: () => onSelect(venue.id),
+                mouseout: () => onSelect(null),
+              }}
+            >
+              <Popup>
+                <VenuePopup venue={venue} />
+              </Popup>
+            </Marker>
+          );
+        })}
 
         {/* Solo en modo "cerca-de-mi": círculo de radio + pin del usuario. */}
         {centroUsuario && (
@@ -133,6 +148,7 @@ export function VenueMap({ venues, centroUsuario }: VenueMapProps) {
           venues={venues}
           centro={centroUsuario ? centroUsuario.coordenadas : null}
         />
+        <InvalidarTamano />
       </MapContainer>
 
       <Leyenda />

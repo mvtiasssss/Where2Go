@@ -100,7 +100,8 @@ export function SearchExperience({ venues }: SearchExperienceProps) {
                 Abierto ahora
               </button>
             </div>
-            <div className="inline-flex rounded-full border border-black/10 p-1 dark:border-white/15">
+            {/* Toggle solo en mobile/angosto; en lg+ se muestran mapa y lista juntos. */}
+            <div className="inline-flex rounded-full border border-black/10 p-1 lg:hidden dark:border-white/15">
               {(["mapa", "lista"] as const).map((vista) => (
                 <button
                   key={vista}
@@ -119,22 +120,39 @@ export function SearchExperience({ venues }: SearchExperienceProps) {
             </div>
           </div>
 
-          {vistaResultados === "mapa" ? (
-            // z-0: mantiene el mapa de Leaflet por debajo de overlays/barras fijas.
-            <div
-              role="region"
-              aria-label="Mapa de resultados"
-              className="relative z-0 h-[65vh] min-h-[420px] overflow-hidden rounded-xl border border-black/10 dark:border-white/15"
-            >
-              <VenueMap venues={resultados} centroUsuario={centroUsuario} />
+          {/* Mobile/angosto: el toggle muestra uno u otro (CSS hidden). lg+: ambos en
+              grid 2 columnas, el mapa sticky. Los dos se renderizan siempre; el
+              ResizeObserver del mapa corrige el sizing si estaba oculto. */}
+          <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] lg:items-start lg:gap-4">
+            <div className={vistaResultados === "lista" ? "lg:block" : "hidden lg:block"}>
+              <VenueList
+                venues={resultados}
+                selectedId={selectedId}
+                onSelect={setSelectedId}
+              />
             </div>
-          ) : (
-            <VenueList
-              venues={resultados}
-              selectedId={selectedId}
-              onSelect={setSelectedId}
-            />
-          )}
+            <div
+              className={
+                vistaResultados === "mapa"
+                  ? "lg:sticky lg:top-4"
+                  : "hidden lg:sticky lg:top-4 lg:block"
+              }
+            >
+              {/* z-0: mantiene el mapa de Leaflet por debajo de overlays/barras fijas. */}
+              <div
+                role="region"
+                aria-label="Mapa de resultados"
+                className="relative z-0 h-[65vh] min-h-[420px] overflow-hidden rounded-xl border border-black/10 lg:h-[78vh] dark:border-white/15"
+              >
+                <VenueMap
+                  venues={resultados}
+                  centroUsuario={centroUsuario}
+                  selectedId={selectedId}
+                  onSelect={setSelectedId}
+                />
+              </div>
+            </div>
+          </div>
         </section>
       )}
     </div>

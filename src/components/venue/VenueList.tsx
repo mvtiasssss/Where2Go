@@ -4,7 +4,7 @@ import { VenueCard } from "@/components/venue/VenueCard";
 interface VenueListProps {
   venues: Venue[];
   selectedId: string | null;
-  onSelect: (id: string) => void;
+  onSelect: (id: string | null) => void;
 }
 
 export function VenueList({ venues, selectedId, onSelect }: VenueListProps) {

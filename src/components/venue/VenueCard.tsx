@@ -12,13 +12,14 @@ const PLACEHOLDER = "/venues/placeholder.png";
 interface VenueCardProps {
   venue: Venue;
   selected: boolean;
-  onSelect: (id: string) => void;
+  onSelect: (id: string | null) => void;
 }
 
 export function VenueCard({ venue, selected, onSelect }: VenueCardProps) {
   const ref = useRef<HTMLElement>(null);
 
-  // Sync mapa -> lista: al seleccionarse desde el mapa, la card entra en vista.
+  // Sync mapa -> lista: al resaltarse desde el mapa, la card entra en vista
+  // (block: "nearest" no scrollea si ya está visible).
   useEffect(() => {
     if (selected) {
       ref.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
@@ -30,47 +31,45 @@ export function VenueCard({ venue, selected, onSelect }: VenueCardProps) {
   const precio = getPriceLevel(venue.ticketPromedio);
 
   return (
+    // Hover/foco resalta el marcador en el mapa (sync). En mobile (toggle) el
+    // hover no aplica; no se fuerza nada.
     <article
       ref={ref}
+      onMouseEnter={() => onSelect(venue.id)}
+      onMouseLeave={() => onSelect(null)}
+      onFocus={() => onSelect(venue.id)}
+      onBlur={() => onSelect(null)}
       className={`flex items-stretch gap-3 rounded-xl border p-3 transition-colors ${
         selected
           ? "border-foreground ring-2 ring-foreground/30"
           : "border-black/10 dark:border-white/15"
       }`}
     >
-      {/* Botón = selección (sync con el mapa). */}
-      <button
-        type="button"
-        onClick={() => onSelect(venue.id)}
-        aria-pressed={selected}
-        className="flex flex-1 gap-3 text-left"
-      >
-        <div className="relative h-20 w-28 shrink-0 overflow-hidden rounded-lg bg-black/5">
-          <Image
-            src={portada}
-            alt={venue.nombre}
-            fill
-            sizes="112px"
-            className="object-cover"
-          />
-        </div>
-        <div className="flex flex-col gap-0.5">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="font-medium">{venue.nombre}</span>
-            <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-              {precio}
-            </span>
-            <IndicadorAbierto venue={venue} />
-          </div>
-          <span className="text-sm capitalize text-zinc-500">
-            {venue.categoria} · {venue.comuna}
-            {venue.sector ? ` (${venue.sector})` : ""}
+      <div className="relative h-20 w-28 shrink-0 overflow-hidden rounded-lg bg-black/5">
+        <Image
+          src={portada}
+          alt={venue.nombre}
+          fill
+          sizes="112px"
+          className="object-cover"
+        />
+      </div>
+      <div className="flex flex-1 flex-col gap-0.5">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="font-medium">{venue.nombre}</span>
+          <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+            {precio}
           </span>
-          <span className="text-sm text-zinc-500">
-            ${venue.ticketPromedio.toLocaleString("es-CL")} por persona
-          </span>
+          <IndicadorAbierto venue={venue} />
         </div>
-      </button>
+        <span className="text-sm capitalize text-zinc-500">
+          {venue.categoria} · {venue.comuna}
+          {venue.sector ? ` (${venue.sector})` : ""}
+        </span>
+        <span className="text-sm text-zinc-500">
+          ${venue.ticketPromedio.toLocaleString("es-CL")} por persona
+        </span>
+      </div>
 
       {/* Link = navegar a la ficha. */}
       <Link
