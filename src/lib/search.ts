@@ -2,6 +2,7 @@ import type { Commune, Coordinates, Venue, VenueCategory } from "@/types/venue";
 import type { SearchQuery } from "@/types/search";
 import { haversineDistanceKm } from "./geo";
 import { costoPersona } from "./utils";
+import { estaAbierto } from "./horario";
 
 export function searchByCategory(
   venues: Venue[],
@@ -43,8 +44,15 @@ export function searchByRadius(
  * presentes por contrato: la UI construye queries válidas y no hay validación
  * runtime en el MVP. Los guards existen para satisfacer el tipado y no fallar si
  * faltara un dato.
+ *
+ * `ahora` se recibe por parámetro (no se lee con new Date() adentro) para mantener
+ * el motor puro y testeable. Solo se usa si query.soloAbiertosAhora está activo.
  */
-export function searchVenues(venues: Venue[], query: SearchQuery): Venue[] {
+export function searchVenues(
+  venues: Venue[],
+  query: SearchQuery,
+  ahora?: Date
+): Venue[] {
   let resultado = venues;
 
   switch (query.modo) {
@@ -68,6 +76,9 @@ export function searchVenues(venues: Venue[], query: SearchQuery): Venue[] {
   }
   if (query.presupuestoMax !== undefined) {
     resultado = searchByBudget(resultado, query.presupuestoMax);
+  }
+  if (query.soloAbiertosAhora && ahora) {
+    resultado = resultado.filter((venue) => estaAbierto(venue, ahora));
   }
 
   return resultado;

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 import type { Venue } from "@/types/venue";
 import { getPriceLevel } from "@/lib/utils";
+import { IndicadorAbierto } from "@/components/venue/IndicadorAbierto";
 
 const PLACEHOLDER = "/venues/placeholder.png";
 
@@ -54,11 +55,12 @@ export function VenueCard({ venue, selected, onSelect }: VenueCardProps) {
           />
         </div>
         <div className="flex flex-col gap-0.5">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="font-medium">{venue.nombre}</span>
             <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
               {precio}
             </span>
+            <IndicadorAbierto venue={venue} />
           </div>
           <span className="text-sm capitalize text-zinc-500">
             {venue.categoria} · {venue.comuna}

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getVenueBySlug, getAllVenuesIncludingInactive } from "@/lib/data";
 import { getPriceLevel } from "@/lib/utils";
 import { VenueDetailMap } from "@/components/map/VenueDetailMap";
+import { IndicadorAbierto } from "@/components/venue/IndicadorAbierto";
 import type { DiaSemana } from "@/types/venue";
 
 const PLACEHOLDER = "/venues/placeholder.png";
@@ -99,7 +100,12 @@ export default async function VenueDetailPage({
       )}
 
       <header className="flex flex-col gap-2">
-        <h1 className="text-3xl font-semibold tracking-tight">{venue.nombre}</h1>
+        <div className="flex flex-wrap items-center gap-3">
+          <h1 className="text-3xl font-semibold tracking-tight">
+            {venue.nombre}
+          </h1>
+          <IndicadorAbierto venue={venue} />
+        </div>
         <p className="capitalize text-zinc-500">
           {venue.categoria} · {venue.comuna}
           {venue.sector ? ` (${venue.sector})` : ""}

@@ -35,11 +35,19 @@ export function SearchExperience({ venues }: SearchExperienceProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   // Vista de resultados: el mapa es la vista principal por defecto.
   const [vistaResultados, setVistaResultados] = useState<VistaResultados>("mapa");
+  // Filtro rápido "Abierto ahora" (no agrega un paso al wizard).
+  const [soloAbiertos, setSoloAbiertos] = useState(false);
 
-  const resultados = useMemo(
-    () => (query ? searchVenues(venues, query) : []),
-    [venues, query]
-  );
+  const resultados = useMemo(() => {
+    if (!query) return [];
+    // new Date() acá: solo corre en cliente (los resultados se montan tras buscar),
+    // así no hay mismatch de hidratación. El motor sigue puro: recibe `ahora`.
+    return searchVenues(
+      venues,
+      { ...query, soloAbiertosAhora: soloAbiertos },
+      new Date()
+    );
+  }, [venues, query, soloAbiertos]);
 
   function manejarBusqueda(nuevaQuery: SearchQuery) {
     setQuery(nuevaQuery);
@@ -58,13 +66,27 @@ export function SearchExperience({ venues }: SearchExperienceProps) {
       ) : (
         <section aria-live="polite" className="flex flex-col gap-3">
           {/* Cabecera en flujo normal -> siempre por encima del mapa (z-index 400). */}
-          <div className="flex items-center justify-between gap-3">
-            <p className="text-sm font-medium">
-              {resultados.length}{" "}
-              {resultados.length === 1
-                ? "local encontrado"
-                : "locales encontrados"}
-            </p>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <p className="text-sm font-medium">
+                {resultados.length}{" "}
+                {resultados.length === 1
+                  ? "local encontrado"
+                  : "locales encontrados"}
+              </p>
+              <button
+                type="button"
+                aria-pressed={soloAbiertos}
+                onClick={() => setSoloAbiertos((v) => !v)}
+                className={`rounded-full border px-3 py-1.5 text-sm font-medium transition-colors ${
+                  soloAbiertos
+                    ? "border-foreground bg-foreground text-background"
+                    : "border-black/15 text-zinc-500 hover:text-foreground dark:border-white/20"
+                }`}
+              >
+                Abierto ahora
+              </button>
+            </div>
             <div className="inline-flex rounded-full border border-black/10 p-1 dark:border-white/15">
               {(["mapa", "lista"] as const).map((vista) => (
                 <button

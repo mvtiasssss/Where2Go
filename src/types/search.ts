@@ -9,4 +9,5 @@ export interface SearchQuery {
   coordenadas?: Coordinates; // requerido si modo === "cerca-de-mi" | "radio"
   radioKm?: number; // requerido si modo === "cerca-de-mi" | "radio"
   presupuestoMax?: number; // CLP por persona; filtra ticketPromedio <= presupuestoMax
+  soloAbiertosAhora?: boolean; // si está activo, filtra por estaAbierto(venue, ahora)
 }
