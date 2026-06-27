@@ -108,7 +108,11 @@ export function SearchExperience({ venues }: SearchExperienceProps) {
 
           {vistaResultados === "mapa" ? (
             // z-0: mantiene el mapa de Leaflet por debajo de overlays/barras fijas.
-            <div className="relative z-0 h-[65vh] min-h-[420px] overflow-hidden rounded-xl border border-black/10 dark:border-white/15">
+            <div
+              role="region"
+              aria-label="Mapa de resultados"
+              className="relative z-0 h-[65vh] min-h-[420px] overflow-hidden rounded-xl border border-black/10 dark:border-white/15"
+            >
               <VenueMap venues={resultados} />
             </div>
           ) : (

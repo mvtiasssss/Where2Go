@@ -208,7 +208,11 @@ export default async function VenueDetailPage({
       )}
 
       {/* z-0: mantiene el mapa de Leaflet por debajo de overlays/barras fijas. */}
-      <section className="relative z-0 h-[320px] overflow-hidden rounded-xl border border-black/10 dark:border-white/15">
+      <section
+        role="region"
+        aria-label="Ubicación del local en el mapa"
+        className="relative z-0 h-[320px] overflow-hidden rounded-xl border border-black/10 dark:border-white/15"
+      >
         <VenueDetailMap
           coordenadas={venue.coordenadas}
           nombre={venue.nombre}

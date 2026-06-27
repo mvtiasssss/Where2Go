@@ -4,6 +4,7 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { Icon } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import type { Coordinates } from "@/types/venue";
+import { useTilesCarto } from "@/components/map/tiles";
 
 // Ícono manual con assets locales (los defaults de Leaflet rompen bajo el bundler).
 const ICONO = new Icon({
@@ -27,17 +28,17 @@ export function VenueLocationMap({
   nombre,
   direccion,
 }: VenueLocationMapProps) {
+  const { tema, url, atribucion } = useTilesCarto();
+
   return (
     <MapContainer
       center={coordenadas}
       zoom={16}
-      scrollWheelZoom
+      scrollWheelZoom={false}
       className="h-full w-full"
     >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
+      {/* key={tema} remonta el TileLayer limpio al cambiar de tema (sin tiles mezclados). */}
+      <TileLayer key={tema} attribution={atribucion} url={url} />
       <Marker position={coordenadas} icon={ICONO}>
         <Popup>
           <span className="font-medium">{nombre}</span>

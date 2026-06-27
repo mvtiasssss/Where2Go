@@ -5,6 +5,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import { Icon, latLngBounds } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import type { Coordinates, Venue } from "@/types/venue";
+import { useTilesCarto } from "@/components/map/tiles";
 
 // Centro de Santiago por defecto, hasta que fitBounds encuadre los resultados.
 const SANTIAGO_CENTER: Coordinates = { lat: -33.43, lng: -70.62 };
@@ -37,17 +38,17 @@ interface VenueMapProps {
 }
 
 export function VenueMap({ venues }: VenueMapProps) {
+  const { tema, url, atribucion } = useTilesCarto();
+
   return (
     <MapContainer
       center={SANTIAGO_CENTER}
       zoom={12}
-      scrollWheelZoom
+      scrollWheelZoom={false}
       className="h-full w-full"
     >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
+      {/* key={tema} remonta el TileLayer limpio al cambiar de tema (sin tiles mezclados). */}
+      <TileLayer key={tema} attribution={atribucion} url={url} />
       {venues.map((venue) => (
         // El Marker con Popup hijo abre el globito al hacer clic (toque intermedio,
         // no navegación directa); "Ver detalle" recién lleva a la ficha.
