@@ -2,6 +2,7 @@ import Image from "next/image";
 import type { Venue } from "@/types/venue";
 import { getPriceLevel, formatearDistancia } from "@/lib/utils";
 import { IndicadorAbierto } from "@/components/venue/IndicadorAbierto";
+import { ComoLlegar } from "@/components/venue/ComoLlegar";
 
 const PLACEHOLDER = "/venues/placeholder.png";
 
@@ -14,7 +15,6 @@ export function VenuePopup({ venue, distanciaKm }: VenuePopupProps) {
   // Guarda noUncheckedIndexedAccess: fotos[0] puede ser undefined.
   const portada = venue.fotos[0] ?? PLACEHOLDER;
   const precio = getPriceLevel(venue.ticketPromedio);
-  const comoLlegar = `https://www.google.com/maps/dir/?api=1&destination=${venue.coordenadas.lat},${venue.coordenadas.lng}`;
 
   return (
     <div className="w-48">
@@ -46,14 +46,10 @@ export function VenuePopup({ venue, distanciaKm }: VenuePopupProps) {
       </div>
       <div className="mt-2 flex items-center gap-3">
         {/* <a> nativos: el popup lo renderiza Leaflet; navegan siempre. */}
-        <a
-          href={comoLlegar}
-          target="_blank"
-          rel="noopener noreferrer"
+        <ComoLlegar
+          coordenadas={venue.coordenadas}
           className="font-medium text-blue-600 underline-offset-2 hover:underline dark:text-blue-400"
-        >
-          Cómo llegar
-        </a>
+        />
         <a
           href={`/venues/${venue.slug}`}
           className="font-medium text-emerald-600 underline-offset-2 hover:underline dark:text-emerald-400"

@@ -6,6 +6,7 @@ import { useEffect, useRef } from "react";
 import type { Venue } from "@/types/venue";
 import { getPriceLevel, formatearDistancia } from "@/lib/utils";
 import { IndicadorAbierto } from "@/components/venue/IndicadorAbierto";
+import { Etiquetas } from "@/components/venue/Etiquetas";
 
 const PLACEHOLDER = "/venues/placeholder.png";
 
@@ -80,6 +81,7 @@ export function VenueCard({
         <span className="text-sm text-zinc-500 dark:text-zinc-400">
           ${venue.ticketPromedio.toLocaleString("es-CL")} por persona
         </span>
+        <Etiquetas etiquetas={venue.etiquetas} max={3} />
       </div>
 
       {/* Link = navegar a la ficha. */}

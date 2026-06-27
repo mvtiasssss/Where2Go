@@ -7,6 +7,8 @@ import { getPriceLevel } from "@/lib/utils";
 import { VenueDetailMap } from "@/components/map/VenueDetailMap";
 import { IndicadorAbierto } from "@/components/venue/IndicadorAbierto";
 import { ImagenesReferenciales } from "@/components/venue/ImagenesReferenciales";
+import { Etiquetas } from "@/components/venue/Etiquetas";
+import { ComoLlegar } from "@/components/venue/ComoLlegar";
 import type { DiaSemana } from "@/types/venue";
 
 const PLACEHOLDER = "/venues/placeholder.png";
@@ -112,6 +114,7 @@ export default async function VenueDetailPage({
           {venue.sector ? ` (${venue.sector})` : ""}
         </p>
         <p className="text-zinc-600 dark:text-zinc-400">{venue.descripcion}</p>
+        <Etiquetas etiquetas={venue.etiquetas} />
       </header>
 
       <div className="flex flex-col gap-1">
@@ -206,6 +209,11 @@ export default async function VenueDetailPage({
           )}
         </section>
       )}
+
+      <ComoLlegar
+        coordenadas={venue.coordenadas}
+        className="inline-flex w-fit items-center rounded-full bg-foreground px-5 py-2.5 text-sm font-semibold text-background transition-opacity hover:opacity-90"
+      />
 
       {/* z-0: mantiene el mapa de Leaflet por debajo de overlays/barras fijas. */}
       <section
