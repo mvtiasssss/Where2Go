@@ -217,6 +217,7 @@ export default async function VenueDetailPage({
           coordenadas={venue.coordenadas}
           nombre={venue.nombre}
           direccion={venue.direccion}
+          categoria={venue.categoria}
         />
       </section>
 

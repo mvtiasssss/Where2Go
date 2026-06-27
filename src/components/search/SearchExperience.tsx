@@ -49,6 +49,19 @@ export function SearchExperience({ venues }: SearchExperienceProps) {
     );
   }, [venues, query, soloAbiertos]);
 
+  // Centro/radio para el mapa, solo si la búsqueda fue por geolocalización.
+  // Sale de la query (no se recalcula geo); en modo comuna queda null.
+  const centroUsuario = useMemo(() => {
+    if (
+      query?.modo === "cerca-de-mi" &&
+      query.coordenadas &&
+      query.radioKm !== undefined
+    ) {
+      return { coordenadas: query.coordenadas, radioKm: query.radioKm };
+    }
+    return null;
+  }, [query]);
+
   function manejarBusqueda(nuevaQuery: SearchQuery) {
     setQuery(nuevaQuery);
     setSelectedId(null); // nueva búsqueda -> limpia la selección
@@ -113,7 +126,7 @@ export function SearchExperience({ venues }: SearchExperienceProps) {
               aria-label="Mapa de resultados"
               className="relative z-0 h-[65vh] min-h-[420px] overflow-hidden rounded-xl border border-black/10 dark:border-white/15"
             >
-              <VenueMap venues={resultados} />
+              <VenueMap venues={resultados} centroUsuario={centroUsuario} />
             </div>
           ) : (
             <VenueList

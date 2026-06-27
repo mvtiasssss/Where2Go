@@ -24,3 +24,35 @@ body {
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
+
+/* Marcadores de mapa (divIcon): reset del recuadro por defecto de Leaflet. */
+.venue-marker,
+.user-marker {
+  background: transparent;
+  border: 0;
+}
+
+/* Pin por categoría: círculo de color con el emoji. */
+.venue-marker__pin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9999px;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.4);
+  font-size: 15px;
+  line-height: 1;
+}
+
+/* Marcador del usuario: punto azul, claramente distinto a los locales. */
+.user-marker__dot {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: #2563eb;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 2px rgb(37 99 235 / 0.4);
+}
