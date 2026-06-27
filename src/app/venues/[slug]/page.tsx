@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { getVenueBySlug } from "@/lib/data";
+import { getVenueBySlug, getAllVenuesIncludingInactive } from "@/lib/data";
 import { getPriceLevel } from "@/lib/utils";
 import { VenueDetailMap } from "@/components/map/VenueDetailMap";
 import type { DiaSemana } from "@/types/venue";
@@ -21,6 +21,15 @@ const DIAS_ORDEN: { id: DiaSemana; etiqueta: string }[] = [
 
 interface VenueDetailPageProps {
   params: Promise<{ slug: string }>;
+}
+
+export async function generateStaticParams() {
+  const venues = await getAllVenuesIncludingInactive();
+  // Prerenderizamos las fichas navegables: activas y temporalmente-cerradas.
+  // Las "cerrado" dan 404 (notFound), así que no hace falta prerenderearlas.
+  return venues
+    .filter((venue) => venue.estado !== "cerrado")
+    .map((venue) => ({ slug: venue.slug }));
 }
 
 export async function generateMetadata({

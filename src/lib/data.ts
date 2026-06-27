@@ -25,3 +25,13 @@ export async function getAllVenues(): Promise<Venue[]> {
 export async function getVenueBySlug(slug: string): Promise<Venue | undefined> {
   return VENUES.find((venue) => venue.slug === slug);
 }
+
+/**
+ * Devuelve TODOS los locales, sin filtrar por estado. Pensado para
+ * generateStaticParams (prerender de fichas): la página decide cuáles prerenderear
+ * según `estado`, igual que decide la presentación. No usar para lista/buscador
+ * (eso es getAllVenues, solo activos).
+ */
+export async function getAllVenuesIncludingInactive(): Promise<Venue[]> {
+  return VENUES;
+}
